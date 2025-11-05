@@ -1,13 +1,14 @@
 #!/bin/bash
 set -e  # Stop the script if any command fails
 set -o pipefail
+sudo apt install dos2unix
 
 echo "==== Verifying kernel version ===="
 uname -r
 
 echo "==== Updating and installing essential tools ===="
 sudo apt update -y
-sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release git
+sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release git 
 
 # Install docker.io only temporarily to ensure dependencies are met
 sudo apt install -y docker.io
@@ -67,3 +68,4 @@ sudo bpftool version
 
 echo "==== Setup Complete ===="
 echo "Docker and Minikube are ready to use!"
+
