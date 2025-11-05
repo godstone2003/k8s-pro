@@ -1,0 +1,13 @@
+Based on your actual data, here are queries that will definitely work:
+1. Total Events
+promqlsum(falco_events)
+2. Events by Priority (for pie chart)
+promqlsum by (priority) (falco_events)
+3. Events by Rule (to see which rules triggered)
+promqlsum by (rule) (falco_events)
+4. Critical Events Only (priority=2)
+promqlsum(falco_events{priority="2"})
+5. Events Over Time (for line graph)
+promqlsum(rate(falco_events[1m]))
+6. Top 10 Rules
+promqltopk(10, sum by (rule) (falco_events))

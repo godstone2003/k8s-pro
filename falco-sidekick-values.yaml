@@ -1,0 +1,64 @@
+replicaCount: 1
+
+config:
+  # Slack Integration
+  slack:
+    webhookurl: "https://hooks.slack.com/services/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"  # Add your Slack webhook URL here
+    footer: "Falco Security Alert"
+    icon: ":warning:"
+    username: "Falco"
+    outputformat: "all"
+    minimumpriority: "warning"
+    messageformat: |
+      *Priority:* {{.Priority}}
+      *Rule:* {{.Rule}}
+      *Output:* {{.Output}}
+      *Time:* {{.Time}}
+      {{if .Tags}}*Tags:* {{range .Tags}}{{.}} {{end}}{{end}}
+
+  # Email Integration (optional)
+  smtp:
+    hostport: ""  # smtp.gmail.com:587
+    user: ""
+    password: ""
+    from: ""
+    to: ""
+    outputformat: "html"
+    minimumpriority: "warning"
+
+  # Webhook Integration (for custom endpoints)
+  webhook:
+    address: ""  # Your webhook endpoint
+    customHeaders: ""
+    minimumpriority: "warning"
+
+  # Elasticsearch Integration (optional)
+  elasticsearch:
+    hostport: ""  # http://elasticsearch:9200
+    index: "falco"
+    type: "event"
+    minimumpriority: "notice"
+
+  # Output settings
+  debug: false
+  customfields: "environment:production,cluster:minikube"
+
+webui:
+  enabled: true
+  replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 2801
+
+ingress:
+  enabled: false
+
+# Resource limits
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi

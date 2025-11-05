@@ -1,0 +1,76 @@
+# Test Pod 1: Shell Execution Test
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-shell-execution
+  namespace: default
+  labels:
+    app: security-test
+spec:
+  containers:
+  - name: alpine
+    image: alpine:latest
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]
+  restartPolicy: Always
+
+---
+# Test Pod 2: Sensitive File Access Test
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-file-access
+  namespace: default
+  labels:
+    app: security-test
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:latest
+    command: ["/bin/bash"]
+    args: ["-c", "sleep 3600"]
+    volumeMounts:
+    - name: host-root
+      mountPath: /host
+  volumes:
+  - name: host-root
+    hostPath:
+      path: /
+      type: Directory
+  restartPolicy: Always
+
+---
+# Test Pod 3: Privileged Container Test
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-privileged
+  namespace: default
+  labels:
+    app: security-test
+spec:
+  containers:
+  - name: privileged-container
+    image: alpine:latest
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]
+    securityContext:
+      privileged: true
+  restartPolicy: Always
+
+---
+# Test Pod 4: Network Tools Test
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-network-tools
+  namespace: default
+  labels:
+    app: security-test
+spec:
+  containers:
+  - name: network-test
+    image: nicolaka/netshoot:latest
+    command: ["/bin/bash"]
+    args: ["-c", "sleep 3600"]
+  restartPolicy: Always

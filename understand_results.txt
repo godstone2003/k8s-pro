@@ -1,0 +1,13 @@
+ Understanding Your Falco Data
+From the metric you showed me, here's what we know:
+Priority Levels:
+
+0 = Emergency
+1 = Alert
+2 = Critical ← This is what you're seeing
+3 = Error
+4 = Warning
+5 = Notice
+6 = Informational
+7 = Debug
+

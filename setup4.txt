@@ -1,0 +1,46 @@
+Name: Prometheus
+   URL: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+   Access: Server (default)
+```
+
+5. **Save:**
+   - Scroll down
+   - Click **"Save & Test"**
+   - You should see:  "Data source is working"
+
+6. **Now go back and import your dashboard:**
+   - Click **"+"** → **"Import"**
+   - Upload `falco-security-dashboard.json`
+   - The **Prometheus dropdown will now have an option!**
+   - Select **"Prometheus"**
+   - Click **"Import"**
+
+---
+
+##  Visual Guide
+
+Here's what you're looking for:
+
+### **During Dashboard Import:**
+```
+┌─────────────────────────────────────┐
+│  Import                              │
+├─────────────────────────────────────┤
+│  Name: Falco Runtime Security       │
+│                                      │
+│  Folder: General                    │
+│                                      │
+│  Prometheus: [Prometheus ▼]  ← HERE!
+│                                      │
+│  [ Import ]                         │
+└─────────────────────────────────────┘
+```
+
+### **If Dropdown is Empty:**
+```
+┌─────────────────────────────────────┐
+│  Prometheus: [No data sources ▼]    │
+│                                      │
+│   Configure a Prometheus          │
+│     datasource first                │
+└─────────────────────────────────────┘

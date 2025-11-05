@@ -1,0 +1,130 @@
+- rule: Unauthorized Shell in Container
+  desc: Detect shell execution inside container
+  condition: >
+    spawned_process and 
+    container and 
+    proc.name in (bash, sh, zsh, ash) and 
+    not trusted_container
+  output: >
+    Shell spawned in container 
+    (user=%user.name command=%proc.cmdline container=%container.name 
+    image=%container.image.repository pod=%k8s.pod.name)
+  priority: WARNING
+  tags: [container, shell, mitre_execution]
+
+- rule: Privilege Escalation Attempt
+  desc: Detect privilege escalation using setuid/setgid
+  condition: >
+    spawned_process and 
+    container and 
+    (proc.name in (sudo, su) or 
+    proc.args contains "setuid" or 
+    proc.args contains "setgid")
+  output: >
+    Privilege escalation detected 
+    (user=%user.name command=%proc.cmdline container=%container.name 
+    pod=%k8s.pod.name namespace=%k8s.ns.name)
+  priority: CRITICAL
+  tags: [privilege_escalation, mitre_privilege_escalation]
+
+- rule: Sensitive File Access
+  desc: Monitor access to sensitive system files
+  condition: >
+    open_read and 
+    container and 
+    (fd.name startswith "/etc/shadow" or 
+    fd.name startswith "/etc/passwd" or 
+    fd.name startswith "/root/.ssh/" or
+    fd.name contains "id_rsa")
+  output: >
+    Sensitive file accessed 
+    (file=%fd.name user=%user.name command=%proc.cmdline 
+    container=%container.name pod=%k8s.pod.name)
+  priority: CRITICAL
+  tags: [filesystem, credentials, mitre_credential_access]
+
+- rule: Container Escape Attempt
+  desc: Detect potential container escape attempts
+  condition: >
+    spawned_process and 
+    container and 
+    (proc.name = "nsenter" or 
+    proc.args contains "docker.sock" or
+    proc.args contains "/var/run/docker.sock" or
+    proc.name = "runc")
+  output: >
+    Potential container escape detected 
+    (command=%proc.cmdline user=%user.name 
+    container=%container.name pod=%k8s.pod.name)
+  priority: CRITICAL
+  tags: [container_escape, mitre_escape]
+
+- rule: Reverse Shell Connection
+  desc: Detect outbound shell connections (potential reverse shell)
+  condition: >
+    spawned_process and 
+    container and 
+    proc.name in (nc, ncat, netcat, socat) and 
+    (proc.args contains "-e" or proc.args contains "-c")
+  output: >
+    Potential reverse shell detected 
+    (command=%proc.cmdline user=%user.name 
+    container=%container.name pod=%k8s.pod.name)
+  priority: CRITICAL
+  tags: [network, reverse_shell, mitre_command_and_control]
+
+- rule: Suspicious Network Tool Execution
+  desc: Detect network reconnaissance tools
+  condition: >
+    spawned_process and 
+    container and 
+    proc.name in (nmap, masscan, tcpdump, wireshark, tshark)
+  output: >
+    Network reconnaissance tool executed 
+    (tool=%proc.name command=%proc.cmdline 
+    container=%container.name pod=%k8s.pod.name)
+  priority: WARNING
+  tags: [network, reconnaissance, mitre_discovery]
+
+- rule: Package Manager in Container
+  desc: Detect package manager usage (unusual in production)
+  condition: >
+    spawned_process and 
+    container and 
+    proc.name in (apt, apt-get, yum, dnf, apk, pip, npm)
+  output: >
+    Package manager executed in container 
+    (manager=%proc.name command=%proc.cmdline 
+    container=%container.name pod=%k8s.pod.name)
+  priority: NOTICE
+  tags: [software, mitre_execution]
+
+- rule: Cryptomining Detection
+  desc: Detect potential cryptomining activity
+  condition: >
+    spawned_process and 
+    container and 
+    (proc.name in (xmrig, minerd, cpuminer) or
+    proc.args contains "stratum+tcp" or
+    proc.args contains "mining pool")
+  output: >
+    Potential cryptomining detected 
+    (command=%proc.cmdline container=%container.name pod=%k8s.pod.name)
+  priority: CRITICAL
+  tags: [cryptomining, resource_abuse]
+
+# Macro definitions
+- macro: trusted_container
+  condition: >
+    (container.image.repository in (gcr.io/google_containers/kube-proxy,
+    gcr.io/google-containers/kube-proxy,
+    k8s.gcr.io/kube-proxy))
+
+- macro: container
+  condition: container.id != host
+
+- macro: spawned_process
+  condition: evt.type = execve and evt.dir=<
+
+- macro: open_read
+  condition: (evt.type=open or evt.type=openat) and evt.is_open_read=true and fd.typechar='f'
