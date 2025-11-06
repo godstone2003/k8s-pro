@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e  # Stop the script if any command fails
-set -o pipefail
 sudo apt install dos2unix
 
 echo "==== Verifying kernel version ===="
@@ -68,4 +67,5 @@ sudo bpftool version
 
 echo "==== Setup Complete ===="
 echo "Docker and Minikube are ready to use!"
+
 
