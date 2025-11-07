@@ -7,12 +7,6 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm version
 echo "==== Helm Installed ===="
 
-#install helm
-helm install falco-sidekick falcosecurity/falco-sidekick \
-  --namespace falco \
-  -f falco-sidekick-values.yaml
-echo "==== Falco Sidekick Installed ===="  
-  
 # Add Falco Helm repository
 helm repo add falcosecurity https://falcosecurity.github.io/charts
 helm repo update
@@ -37,3 +31,9 @@ helm upgrade falco falcosecurity/falco \
   --reuse-values \
   --set customRules."custom-rules\.yaml"="$(cat custom_rules.yaml | base64 -w0)"
 echo "==== Custom Rules ConfigMap Created and Applied ===="
+
+#install helm-sidekick
+helm install falco-sidekick falcosecurity/falco-sidekick \
+  --namespace falco \
+  -f falco-sidekick-values.yaml
+echo "==== Falco Sidekick Installed ====" 
