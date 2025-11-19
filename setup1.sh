@@ -5,6 +5,10 @@ sudo apt install dos2unix
 echo "==== Verifying kernel version ===="
 uname -r
 
+echo "==== Installing eBPF tools (bpftool) ===="
+sudo apt install -y linux-tools-$(uname -r) linux-tools-generic
+sudo bpftool version
+
 echo "==== Updating and installing essential tools ===="
 sudo apt update -y
 sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release git 
@@ -61,11 +65,9 @@ minikube start --cpus=4 --memory=6144 --driver=docker || {
   minikube start --cpus=4 --memory=6144 --driver=docker
 }
 
-echo "==== Installing eBPF tools (bpftool) ===="
-sudo apt install -y linux-tools-$(uname -r) linux-tools-generic
-sudo bpftool version
 
 echo "==== Setup Complete ===="
 echo "Docker and Minikube are ready to use!"
+
 
 
