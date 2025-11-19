@@ -337,7 +337,7 @@ if [ "$DASHBOARD_UID" != "null" ] && [ ! -z "$DASHBOARD_UID" ]; then
     echo ""
     echo "Port-forward is running. Press Ctrl+C to stop."
     echo ""
-    
+    echo "datasource:http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090"
     # Keep port-forward running
     wait $PF_PID
 else
@@ -348,4 +348,5 @@ else
 fi
 
 # Cleanup
+
 trap "kill $PF_PID 2>/dev/null || true" EXIT
