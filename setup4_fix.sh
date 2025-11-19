@@ -66,7 +66,7 @@ helm install falco falcosecurity/falco \
     --set metrics.enabled=true \
     --set falcosidekick.enabled=true \
     --set falcosidekick.ui.enabled=true \
-    --set falcosidekick.config.slack.webhookurl="https://hooks.slack.com/services/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" \ #add your slack api first
+    --set falcosidekick.config.slack.webhookurl="https://hooks.slack.com/services/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" \
     --set resources.requests.cpu=100m \
     --set resources.requests.memory=256Mi \
     --set resources.limits.cpu=500m \
@@ -226,3 +226,4 @@ echo "check falco_events on prometheus to verify metrics are being collected."
 
 
 print_status "Setup complete!"
+
